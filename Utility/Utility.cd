@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Utility.Monitoring.KeyboardWatcher">
+    <Position X="1" Y="0.75" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAECAAAAAAAAAAAAAAAAAQAAAAMAAAAABAAAA=</HashCode>
+      <FileName>Monitoring\KeyboardWatcher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Utility.Monitoring.KeyPressedEventArgs">
+    <Position X="5" Y="0.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Monitoring\KeyPressedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Utility.Console.ConsoleSettings">
+    <Position X="8.25" Y="0.75" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAgABAABAiAAAAAAAABAAAAAAAAAAAQBAAAAAAAAA=</HashCode>
+      <FileName>Console\ConsoleSettings.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

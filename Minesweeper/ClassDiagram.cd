@@ -1,0 +1,165 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Minesweeper.GameCursor">
+    <Position X="10.25" Y="7.25" Width="3.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAoAAAAAAAAAAAAACAAAAAgAIYAAAAAAAAAA=</HashCode>
+      <FileName>GameCursor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.GameConfiguration">
+    <Position X="6.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAABAAIAAAACAAAAACAAAAAgAAAA=</HashCode>
+      <FileName>GameConfiguration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.Game">
+    <Position X="5.75" Y="3.25" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAACACAAASAAAAEAAAAAAQAABAAAAAAAIgEAACAAAAE=</HashCode>
+      <FileName>Game.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="config" />
+      <Field Name="cursor" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Minesweeper.Strategy.EmptyTilesRevealStrategy" BaseTypeListCollapsed="true">
+    <Position X="4.75" Y="11" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Strategy\EmptyTilesRevealStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Minesweeper.Strategy.CellInfo">
+    <Position X="1" Y="7.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAgAABAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Strategy\CellInfo.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.Strategy.SurroundingTilesRevealStrategy" BaseTypeListCollapsed="true">
+    <Position X="4.75" Y="12.5" Width="5.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Strategy\SurroundingTilesRevealStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Minesweeper.Strategy.SimpleRandomGenerationStrategy" BaseTypeListCollapsed="true">
+    <Position X="1" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAKAAAAAAAAAAQAAAEAAAQAAAAAAAAAgAAAAEAAAAA=</HashCode>
+      <FileName>Strategy\SimpleRandomGenerationStrategy.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Minesweeper.Events.GameStartedEventArgs">
+    <Position X="14.25" Y="0.5" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Events\GameStartedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.Board.GameBoard" Collapsed="true">
+    <Position X="20" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAgAAAgAAAAAQAAEAAAKAAAEAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Board\GameBoard.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.Board.GameCell" Collapsed="true">
+    <Position X="16.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBAAAAAAAEAAAABAAAAAQAAAAEAAAgAAQIAAAAAAAA=</HashCode>
+      <FileName>Board\GameCell.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.Board.Mine" Collapsed="true">
+    <Position X="15.25" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Board\Mine.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.Board.Tile" Collapsed="true">
+    <Position X="17.5" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIBAAAAAAAAAAABEAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Board\Tile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.GameWonEventArgs">
+    <Position X="14.25" Y="2" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Events\GameWonEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.GameLossEventArgs">
+    <Position X="14.25" Y="3.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Events\GameLossEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.Events.CellsUpdatedEventArgs" Collapsed="true">
+    <Position X="19" Y="4.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Events\CellsUpdatedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Minesweeper.Events.CursorMovedEventArgs" Collapsed="true">
+    <Position X="18" Y="6" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Events\CursorMovedEventArgs.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Minesweeper.Board.BoardPosition" Collapsed="true">
+    <Position X="20" Y="10.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAQACAAEAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Board\BoardPosition.cs</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="Minesweeper.Visitor.ICellVisitor">
+    <Position X="0.5" Y="1" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Visitor\ICellVisitor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Minesweeper.Strategy.ICellRevealStrategy&lt;T&gt;">
+    <Position X="6.5" Y="9" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Strategy\IRevealStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Minesweeper.Strategy.IFieldGenerationStrategy">
+    <Position X="3.5" Y="8" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Strategy\IFieldGenerationStrategy.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Minesweeper.Board.CellType" Collapsed="true">
+    <Position X="20" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Board\CellType.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Minesweeper.CursorMoveDirection">
+    <Position X="10.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAACACAAAAAAAI=</HashCode>
+      <FileName>CursorMoveDirection.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
