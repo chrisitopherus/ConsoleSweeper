@@ -1,5 +1,6 @@
 ﻿using Minesweeper.Board;
 using Minesweeper.Events;
+using Minesweeper.Strategy;
 
 namespace Minesweeper;
 
@@ -8,6 +9,7 @@ public class Game
     private GameConfiguration config;
     private GameBoard board;
     private GameCursor cursor;
+    private EmptyTilesRevealStrategy emptyTilesRevealStrategy = new EmptyTilesRevealStrategy();
 
     public event EventHandler<GameStartedEventArgs> GameStarted;
     public event EventHandler<GameWonEventArgs> GameWon;
@@ -35,12 +37,27 @@ public class Game
     /// </summary>
     public void TryReveal()
     {
-        bool hasChanged = this.board.RevealCell(this.cursor.CurrentPosition);
-
-        if (hasChanged)
+        GameCell cell = this.board.GetCellAt(this.cursor.CurrentPosition);
+        if (cell.IsRevealed)
         {
-            this.FireOnEvent(this.CellsUpdated, new CellsUpdatedEventArgs());
+            if (cell.Type != CellType.Tile || cell.IsEmpty) return;
+
+            // use strategy to reveal surrounding
+            return;
         }
+
+        if (cell.IsEmpty)
+        {
+            // Use Empty Reveal Strategy
+            this.emptyTilesRevealStrategy.Reveal(this.Board, cell, this.cursor.CurrentPosition);
+        }
+        else
+        {
+            // otherwise reveal it
+            cell.Reveal();
+        }
+
+        this.FireOnEvent(this.CellsUpdated, new CellsUpdatedEventArgs());
     }
 
     /// <summary>
@@ -62,6 +79,7 @@ public class Game
     /// <param name="direction">The direction in which the cursor should move.</param>
     public void MoveCursor(CursorMoveDirection direction)
     {
+        BoardPosition previousPosition = this.cursor.CurrentPosition;
         switch (direction)
         {
             case CursorMoveDirection.Left:
@@ -78,7 +96,7 @@ public class Game
                 break;
         }
 
-        this.FireOnEvent(this.CursorMoved, new CursorMovedEventArgs());
+        this.FireOnEvent(this.CursorMoved, new CursorMovedEventArgs(previousPosition, this.cursor.CurrentPosition));
     }
 
     protected virtual void FireOnEvent<TEventArgs>(EventHandler<TEventArgs> eventHandler, TEventArgs e)
