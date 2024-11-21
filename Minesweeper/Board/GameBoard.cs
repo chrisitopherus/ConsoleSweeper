@@ -73,9 +73,10 @@ public class GameBoard
     /// <returns>Whether the cell was updated.</returns>
     public bool RevealCell(GameCell cell)
     {
-        bool revealStateBefore = cell.IsRevealed;
+        if (cell.IsRevealed) return false;
+
         cell.Reveal();
-        return revealStateBefore != cell.IsRevealed;
+        return true;
     }
 
     /// <summary>
