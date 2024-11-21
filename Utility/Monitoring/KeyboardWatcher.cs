@@ -59,7 +59,7 @@ public class KeyboardWatcher
         {
             if (Console.KeyAvailable)
             {
-                ConsoleKey key = Console.ReadKey(false).Key;
+                ConsoleKey key = Console.ReadKey(true).Key;
                 this.FireOnKeyPressed(new KeyPressedEventArgs(key));
             }
 
