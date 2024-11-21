@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Utility.Console
+namespace Utility.Cmd
 {
     public class ConsoleSettings
     {
