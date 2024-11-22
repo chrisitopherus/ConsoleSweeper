@@ -1,4 +1,4 @@
-﻿using Minesweeper.Board;
+﻿using Minesweeper.Cells;
 using Minesweeper.Visitor;
 using System;
 using System.Collections.Generic;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Minesweeper.Board;
+namespace Minesweeper.Cells;
 
 public abstract class GameCell(CellType type)
 {
@@ -19,12 +19,12 @@ public abstract class GameCell(CellType type)
     {
         get
         {
-            return this.isMarked;
+            return isMarked;
         }
 
         set
         {
-            this.isMarked = value;
+            isMarked = value;
         }
     }
 
@@ -32,29 +32,29 @@ public abstract class GameCell(CellType type)
     {
         get
         {
-            return this.isRevealed;
+            return isRevealed;
         }
 
         set
         {
-            this.isRevealed = value;
+            isRevealed = value;
         }
     }
     public abstract void Accept(ICellVisitor visitor);
 
     public void Reveal()
     {
-        this.IsRevealed = true;
-        this.IsMarked = false;
+        IsRevealed = true;
+        IsMarked = false;
     }
 
     public bool ToggleMark()
     {
-        if (!this.IsRevealed)
+        if (!IsRevealed)
         {
-            this.IsMarked = !IsMarked;
+            IsMarked = !IsMarked;
         }
 
-        return this.IsMarked;
+        return IsMarked;
     }
 }

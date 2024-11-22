@@ -40,23 +40,23 @@ public class ConsoleBorderRenderer
 
     private string CreateTopBorder(int width)
     {
-        sb.Append(Sprites.BorderTopLeftCorner);
-        sb.Append(string.Concat(Enumerable.Repeat(Sprites.BorderHorizontal, width - 2)));
-        sb.Append(Sprites.BorderTopRightCorner);
+        this.sb.Append(Sprites.BorderTopLeftCorner);
+        this.sb.Append(string.Concat(Enumerable.Repeat(Sprites.BorderHorizontal, width - 2)));
+        this.sb.Append(Sprites.BorderTopRightCorner);
 
-        string topBorder = sb.ToString();
-        sb.Clear();
+        string topBorder = this.sb.ToString();
+        this.sb.Clear();
         return topBorder;
     }
 
     private string CreateBottomBorder(int width)
     {
-        sb.Append(Sprites.BorderBottomLeftCorner);
-        sb.Append(string.Concat(Enumerable.Repeat(Sprites.BorderHorizontal, width - 2)));
-        sb.Append(Sprites.BorderBottomRightCorner);
+        this.sb.Append(Sprites.BorderBottomLeftCorner);
+        this.sb.Append(string.Concat(Enumerable.Repeat(Sprites.BorderHorizontal, width - 2)));
+        this.sb.Append(Sprites.BorderBottomRightCorner);
 
         string bottomBorder = sb.ToString();
-        sb.Clear();
+        this.sb.Clear();
         return bottomBorder;
     }
 }

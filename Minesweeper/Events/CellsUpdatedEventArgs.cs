@@ -1,4 +1,4 @@
-﻿using Minesweeper.Strategy;
+﻿using Minesweeper.Cells;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +8,10 @@ namespace Minesweeper.Events;
 
 public class CellsUpdatedEventArgs : EventArgs
 {
-    public CellsUpdatedEventArgs(List<CellInfo> updatedCells)
+    public CellsUpdatedEventArgs(List<CellChangeInfo> updatedCells)
     {
         this.UpdatedCells = updatedCells;
     }
 
-    public List<CellInfo> UpdatedCells { get; }
+    public List<CellChangeInfo> UpdatedCells { get; }
 }

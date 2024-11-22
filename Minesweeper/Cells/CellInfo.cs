@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Minesweeper.Strategy;
+namespace Minesweeper.Cells;
 
-public class CellInfo
+public class CellInfo : ICellInfo
 {
     private readonly GameCell cell;
     private readonly BoardPosition position;
@@ -17,7 +17,7 @@ public class CellInfo
         this.position = position;
     }
 
-    public GameCell Cell => this.cell;
+    public GameCell Cell => cell;
 
-    public BoardPosition Position => this.position;
+    public BoardPosition Position => position;
 }

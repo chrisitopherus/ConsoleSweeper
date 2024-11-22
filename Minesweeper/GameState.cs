@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Minesweeper.Board;
+namespace Minesweeper;
 
-public enum CellType
+public enum GameState
 {
-    Mine,
-    Tile
+    NotStarted,
+    Paused,
+    Running,
+    Win,
+    Loss
 }

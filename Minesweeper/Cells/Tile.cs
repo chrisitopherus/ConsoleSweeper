@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Minesweeper.Board;
+namespace Minesweeper.Cells;
 
 public class Tile : GameCell
 {
@@ -13,20 +13,20 @@ public class Tile : GameCell
     public Tile(uint nearbyMineCount)
         : base(CellType.Tile)
     {
-        this.NearbyMineCount = nearbyMineCount;
+        NearbyMineCount = nearbyMineCount;
     }
 
     public uint NearbyMineCount
     {
         get
         {
-            return this.nearbyMineCount;
+            return nearbyMineCount;
         }
 
         private set
         {
             if (value > 8) throw new ArgumentOutOfRangeException(nameof(NearbyMineCount), "The mine count must not be greater than 8.");
-            this.nearbyMineCount = value;
+            nearbyMineCount = value;
         }
     }
 
@@ -34,7 +34,7 @@ public class Tile : GameCell
     {
         get
         {
-            return this.nearbyMineCount == 0;
+            return nearbyMineCount == 0;
         }
     }
 
@@ -45,6 +45,6 @@ public class Tile : GameCell
 
     public override string ToString()
     {
-        return $"{(this.NearbyMineCount > 0 ? this.NearbyMineCount : " ")}";
+        return $"{(NearbyMineCount > 0 ? NearbyMineCount : " ")}";
     }
 }

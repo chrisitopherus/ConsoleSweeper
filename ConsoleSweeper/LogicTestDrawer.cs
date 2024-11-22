@@ -1,4 +1,5 @@
 ﻿using Minesweeper.Board;
+using Minesweeper.Cells;
 using Minesweeper.Strategy;
 using System;
 using System.Collections.Generic;

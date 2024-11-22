@@ -1,4 +1,5 @@
 ﻿using Minesweeper.Board;
+using Minesweeper.Cells;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,14 +13,14 @@ namespace Minesweeper.Strategy;
 /// </summary>W
 public class EmptyTilesRevealStrategy : ICellRevealStrategy<GameCell>
 {
-    public List<CellInfo> Reveal(GameBoard board, GameCell cell, BoardPosition position)
+    public List<CellChangeInfo> Reveal(GameBoard board, GameCell cell, BoardPosition position)
     {
         if (!cell.IsEmpty)
         {
             throw new ArgumentException("The cell must be empty for this strategy.", nameof(cell));
         }
 
-        List<CellInfo> revealedCells = [];
+        List<CellChangeInfo> revealedCells = [];
         Stack<CellInfo> stack = new Stack<CellInfo>();
 
         // pushing the first empty tile to the stack
@@ -32,9 +33,10 @@ public class EmptyTilesRevealStrategy : ICellRevealStrategy<GameCell>
             // skip if cell is already revealed
             if (cellInfo.Cell.IsRevealed) continue;
 
+            CellChangeType cellChangeType = this.DetermineChangeType(cellInfo.Cell);
             // reveal the cell
             cellInfo.Cell.Reveal();
-            revealedCells.Add(cellInfo);
+            revealedCells.Add(new CellChangeInfo(cellInfo, cellChangeType));
 
             // if cell is not empty, its a border
             if (!cellInfo.Cell.IsEmpty) continue;
@@ -64,5 +66,10 @@ public class EmptyTilesRevealStrategy : ICellRevealStrategy<GameCell>
         }
 
         return revealedCells;
+    }
+
+    private CellChangeType DetermineChangeType(GameCell cell)
+    {
+        return cell.IsMarked ? CellChangeType.UnmarkedAndRevealed : CellChangeType.Revealed;
     }
 }

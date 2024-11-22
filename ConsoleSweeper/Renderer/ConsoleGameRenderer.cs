@@ -1,7 +1,7 @@
 ﻿using ConsoleSweeper.Renderer.Util;
 using Minesweeper;
 using Minesweeper.Board;
-using Minesweeper.Strategy;
+using Minesweeper.Cells;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,9 +43,9 @@ public class ConsoleGameRenderer : IGameRenderer
         this.Setup();
     }
 
-    public void RenderCellsUpdate(List<CellInfo> updatedCellInfos)
+    public void RenderCellsUpdate(IEnumerable<ICellInfo> updatedCellInfos)
     {
-        foreach(CellInfo cellInfo in updatedCellInfos)
+        foreach(ICellInfo cellInfo in updatedCellInfos)
         {
             if (this.game.Cursor.CurrentPosition.IsEqual(cellInfo.Position))
             {

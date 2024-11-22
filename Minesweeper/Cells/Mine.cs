@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Minesweeper.Board;
+namespace Minesweeper.Cells;
 
 public class Mine : GameCell
 {
