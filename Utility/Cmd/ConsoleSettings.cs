@@ -10,17 +10,18 @@ namespace Utility.Cmd
         public ConsoleSettings(
             ConsoleColor foregroundColor,
             ConsoleColor backgroundColor,
-            int bufferWidth,
-            int bufferHeight,
             int windowWidth,
-            int windowHeight)
+            int windowHeight,
+            int bufferWidth,
+            int bufferHeight
+            )
         {
             ForegroundColor = foregroundColor;
             BackroundColor = backgroundColor;
-            BufferWidth = bufferWidth;
-            BufferHeight = bufferHeight;
             WindowWidth = windowWidth;
             WindowHeight = windowHeight;
+            BufferWidth = bufferWidth;
+            BufferHeight = bufferHeight;
         }
 
         public ConsoleColor ForegroundColor
@@ -64,21 +65,36 @@ namespace Utility.Cmd
             return new ConsoleSettings(
                     Console.ForegroundColor,
                     Console.BackgroundColor,
-                    Console.BufferWidth,
-                    Console.BufferHeight,
                     Console.WindowWidth,
-                    Console.WindowHeight
+                    Console.WindowHeight,
+                    Console.BufferWidth,
+                    Console.BufferHeight
                 );
         }
 
         public void Apply()
         {
-            Console.ForegroundColor = ForegroundColor;
-            Console.BackgroundColor = BackroundColor;
-            Console.BufferWidth = BufferWidth;
-            Console.BufferHeight = BufferHeight;
-            Console.WindowWidth = WindowWidth;
-            Console.WindowHeight = WindowHeight;
+            this.ApplyColors();
+            Console.WindowWidth = this.WindowWidth;
+            Console.WindowHeight = this.WindowHeight;
+            Console.BufferWidth = this.BufferWidth;
+            Console.BufferHeight = this.BufferHeight;
+        }
+
+        public void ApplyColors()
+        {
+            Console.ForegroundColor = this.ForegroundColor;
+            Console.BackgroundColor = this.BackroundColor;
+        }
+
+        public void ApplyFgColor()
+        {
+            Console.ForegroundColor = this.ForegroundColor;
+        }
+
+        public void ApplyBgColor()
+        {
+            Console.BackgroundColor = this.BackroundColor;
         }
     }
 }
