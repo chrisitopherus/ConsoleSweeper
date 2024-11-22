@@ -18,7 +18,7 @@ public class Application
     {
         this.game = new Game(new GameConfiguration(16, 30, 55));
         this.controller = new ConsoleGameController(this.game);
-        this.renderer = new ConsoleGameRenderer(this.game);
+        this.renderer = new ConsoleGameRenderer(4, 2, this.game);
         this.Setup();
     }
     public void Run()
@@ -43,7 +43,7 @@ public class Application
 
     private void OnGameStartedHandler(object? sender, GameStartedEventArgs e)
     {
-        this.renderer.DrawGame();
+        this.renderer.RenderGame();
     }
 
     private void OnGameWonHandler(object? sender, GameWonEventArgs e)
@@ -58,13 +58,11 @@ public class Application
 
     private void OnCursorMovedHandler(object? sender, CursorMovedEventArgs e)
     {
-        this.renderer.DrawCursorUpdate(e.PreviousPosition, e.NewPosition);
+        this.renderer.RenderCursorUpdate(e.PreviousPosition, e.NewPosition);
     }
 
     private void OnCellsUpdatedHandler(object? sender, CellsUpdatedEventArgs e)
     {
-        Console.WriteLine("Cells updated.");
-        Console.Clear();
-        this.renderer.DrawGame();
+        this.renderer.RenderCellsUpdate(e.UpdatedCells);
     }
 }

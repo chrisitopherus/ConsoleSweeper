@@ -42,9 +42,9 @@ public class LogicTestDrawer
         // use empty tile strategy
         var cells = this.emptyTilesRevealStrategy.Reveal(board, cell, position);
 
-        foreach (var c in cells)
+        foreach (var cellInfo in cells)
         {
-            c.Reveal();
+            cellInfo.Cell.Reveal();
         }
     }
 }

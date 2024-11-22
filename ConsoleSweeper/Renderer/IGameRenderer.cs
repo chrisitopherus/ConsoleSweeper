@@ -1,4 +1,5 @@
 ﻿using Minesweeper.Board;
+using Minesweeper.Strategy;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace ConsoleSweeper.Renderer;
 
 public interface IGameRenderer
 {
-    void DrawCursorUpdate(BoardPosition previousPosition, BoardPosition newPosition);
-    void DrawCellsUpdate(List<BoardPosition> updatedCellsPositions);
-    void DrawGame();
+    void RenderCursorUpdate(BoardPosition previousPosition, BoardPosition newPosition);
+    void RenderCellsUpdate(List<CellInfo> updatedCellInfos);
+    void RenderGame();
 }

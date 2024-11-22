@@ -43,5 +43,10 @@ namespace Minesweeper.Board
                 this.col = value;
             }
         }
+
+        public bool IsEqual(BoardPosition other)
+        {
+            return this.Row == other.Row && this.Col == other.Col;
+        }
     }
 }

@@ -11,11 +11,11 @@ public class Game
     private GameCursor cursor;
     private EmptyTilesRevealStrategy emptyTilesRevealStrategy = new EmptyTilesRevealStrategy();
 
-    public event EventHandler<GameStartedEventArgs> GameStarted;
-    public event EventHandler<GameWonEventArgs> GameWon;
-    public event EventHandler<GameLossEventArgs> GameLoss;
-    public event EventHandler<CursorMovedEventArgs> CursorMoved;
-    public event EventHandler<CellsUpdatedEventArgs> CellsUpdated;
+    public event EventHandler<GameStartedEventArgs>? GameStarted;
+    public event EventHandler<GameWonEventArgs>? GameWon;
+    public event EventHandler<GameLossEventArgs>? GameLoss;
+    public event EventHandler<CursorMovedEventArgs>? CursorMoved;
+    public event EventHandler<CellsUpdatedEventArgs>? CellsUpdated;
 
     public Game(GameConfiguration config)
     {
@@ -27,9 +27,11 @@ public class Game
     public GameBoard Board => this.board;
     public GameCursor Cursor => this.cursor;
 
+    public GameConfiguration Config => this.config;
+
     public void Start()
     {
-        this.FireOnEvent(this.GameStarted, new GameStartedEventArgs());
+        this.FireOnEvent(this.GameStarted, new GameStartedEventArgs(this.config));
     }
 
     /// <summary>
@@ -37,27 +39,29 @@ public class Game
     /// </summary>
     public void TryReveal()
     {
-        GameCell cell = this.board.GetCellAt(this.cursor.CurrentPosition);
-        if (cell.IsRevealed)
+        CellInfo cellInfo = new CellInfo(this.board.GetCellAt(this.cursor.CurrentPosition), this.cursor.CurrentPosition);
+        List<CellInfo> updatedCells = [];
+        if (cellInfo.Cell.IsRevealed)
         {
-            if (cell.Type != CellType.Tile || cell.IsEmpty) return;
+            if (cellInfo.Cell.Type != CellType.Tile || cellInfo.Cell.IsEmpty) return;
 
             // use strategy to reveal surrounding
             return;
         }
 
-        if (cell.IsEmpty)
+        if (cellInfo.Cell.IsEmpty)
         {
             // Use Empty Reveal Strategy
-            this.emptyTilesRevealStrategy.Reveal(this.Board, cell, this.cursor.CurrentPosition);
+            updatedCells = this.emptyTilesRevealStrategy.Reveal(this.Board, cellInfo.Cell, cellInfo.Position);
         }
         else
         {
             // otherwise reveal it
-            cell.Reveal();
+            cellInfo.Cell.Reveal();
+            updatedCells.Add(cellInfo);
         }
 
-        this.FireOnEvent(this.CellsUpdated, new CellsUpdatedEventArgs());
+        this.FireOnEvent(this.CellsUpdated, new CellsUpdatedEventArgs(updatedCells));
     }
 
     /// <summary>
@@ -65,11 +69,14 @@ public class Game
     /// </summary>
     public void TryToggleMark()
     {
-        bool hasChanged = this.board.ToggleCellMark(this.cursor.CurrentPosition);
+        CellInfo cellInfo = new CellInfo(this.board.GetCellAt(this.cursor.CurrentPosition), this.cursor.CurrentPosition);
+        bool hasChanged = this.board.ToggleCellMark(cellInfo.Cell);
 
         if (hasChanged)
         {
-            this.FireOnEvent(this.CellsUpdated, new CellsUpdatedEventArgs());
+            List<CellInfo> updatedCells = [];
+            updatedCells.Add(cellInfo);
+            this.FireOnEvent(this.CellsUpdated, new CellsUpdatedEventArgs(updatedCells));
         }
     }
 
@@ -99,7 +106,7 @@ public class Game
         this.FireOnEvent(this.CursorMoved, new CursorMovedEventArgs(previousPosition, this.cursor.CurrentPosition));
     }
 
-    protected virtual void FireOnEvent<TEventArgs>(EventHandler<TEventArgs> eventHandler, TEventArgs e)
+    protected virtual void FireOnEvent<TEventArgs>(EventHandler<TEventArgs>? eventHandler, TEventArgs e)
     {
         eventHandler?.Invoke(this, e);
     }

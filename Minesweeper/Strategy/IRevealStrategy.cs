@@ -8,5 +8,5 @@ namespace Minesweeper.Strategy;
 
 public interface ICellRevealStrategy<T> where T : GameCell
 {
-    List<GameCell> Reveal(GameBoard board, T cell, BoardPosition position);
+    List<CellInfo> Reveal(GameBoard board, T cell, BoardPosition position);
 }

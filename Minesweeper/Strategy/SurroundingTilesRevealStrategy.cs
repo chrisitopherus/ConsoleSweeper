@@ -9,14 +9,14 @@ namespace Minesweeper.Strategy;
 
 public class SurroundingTilesRevealStrategy : ICellRevealStrategy<GameCell>
 {
-    public List<GameCell> Reveal(GameBoard board, GameCell cell, BoardPosition position)
+    public List<CellInfo> Reveal(GameBoard board, GameCell cell, BoardPosition position)
     {
         if (cell.Type == CellType.Mine || cell.IsEmpty)
         {
             throw new ArgumentException("The cell must be a tile for this strategy.", nameof(cell));
         }
 
-        List<GameCell> revealedCells = new List<GameCell>();
+        List<CellInfo> revealedCells = [];
 
         return revealedCells;
     }

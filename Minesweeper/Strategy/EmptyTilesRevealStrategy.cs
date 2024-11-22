@@ -12,14 +12,14 @@ namespace Minesweeper.Strategy;
 /// </summary>W
 public class EmptyTilesRevealStrategy : ICellRevealStrategy<GameCell>
 {
-    public List<GameCell> Reveal(GameBoard board, GameCell cell, BoardPosition position)
+    public List<CellInfo> Reveal(GameBoard board, GameCell cell, BoardPosition position)
     {
         if (!cell.IsEmpty)
         {
             throw new ArgumentException("The cell must be empty for this strategy.", nameof(cell));
         }
 
-        List<GameCell> revealedCells = new List<GameCell>();
+        List<CellInfo> revealedCells = [];
         Stack<CellInfo> stack = new Stack<CellInfo>();
 
         // pushing the first empty tile to the stack
@@ -28,18 +28,16 @@ public class EmptyTilesRevealStrategy : ICellRevealStrategy<GameCell>
         while (stack.Count > 0)
         {
             CellInfo cellInfo = stack.Pop();
-            GameCell currentCell = cellInfo.Cell;
-            BoardPosition currentCellPosition = cellInfo.Position;
 
             // skip if cell is already revealed
-            if (currentCell.IsRevealed) continue;
+            if (cellInfo.Cell.IsRevealed) continue;
 
             // reveal the cell
-            currentCell.Reveal();
-            revealedCells.Add(currentCell);
+            cellInfo.Cell.Reveal();
+            revealedCells.Add(cellInfo);
 
             // if cell is not empty, its a border
-            if (!currentCell.IsEmpty) continue;
+            if (!cellInfo.Cell.IsEmpty) continue;
 
             // reveal surrounding cells
             for (int offsetRow = -1; offsetRow <= 1; offsetRow++)
@@ -49,8 +47,8 @@ public class EmptyTilesRevealStrategy : ICellRevealStrategy<GameCell>
                     // if its the same cell (no offsets applied) -> skip
                     if (offsetRow == 0 && offsetCol == 0) continue;
 
-                    int neighborRow = currentCellPosition.Row + offsetRow;
-                    int neighborCol = currentCellPosition.Col + offsetCol;
+                    int neighborRow = cellInfo.Position.Row + offsetRow;
+                    int neighborCol = cellInfo.Position.Col + offsetCol;
 
                     // if its not a valid position (outside of the board) -> skip
                     if (!board.IsValidBoardPosition(neighborRow, neighborCol)) continue;
