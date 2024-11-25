@@ -58,7 +58,7 @@ public class Game
         this.board = new GameBoard(config);
         this.cursor = new GameCursor(this.board);
         this.emptyTilesRevealStrategy = new EmptyTilesRevealStrategy();
-        this.surroundingTilesRevealStrategy = new SurroundingTilesRevealStrategy(this.board);
+        this.surroundingTilesRevealStrategy = new SurroundingTilesRevealStrategy();
     }
 
     public GameBoard Board => this.board;
@@ -227,7 +227,7 @@ public class Game
     private void Reset()
     {
         this.board = new GameBoard(this.config);
-        this.cursor.Jump(0, 0);
+        this.cursor = new GameCursor(this.board);
         this.FlagAmmo = this.config.MineCount;
     }
 

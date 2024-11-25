@@ -9,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace Minesweeper.Strategy;
 
-public class SurroundingTilesRevealStrategy(GameBoard board) : ICellRevealStrategy
+public class SurroundingTilesRevealStrategy() : ICellRevealStrategy
 {
-    private readonly GameBoard board = board;
     private readonly EmptyTilesRevealStrategy emptyTilesRevealStrategy = new EmptyTilesRevealStrategy();
     public List<CellChangeInfo> Reveal(GameBoard board, ICellInfo cellInfo)
     {
@@ -28,7 +27,7 @@ public class SurroundingTilesRevealStrategy(GameBoard board) : ICellRevealStrate
             if (neighborCellInfo.Cell.IsRevealed) continue;
 
             // reveal the cell depending on the type of the cell
-            revealedCells.AddRange(this.RevealCell(neighborCellInfo));
+            revealedCells.AddRange(this.RevealCell(neighborCellInfo, board));
         }
 
         return revealedCells;
@@ -44,7 +43,7 @@ public class SurroundingTilesRevealStrategy(GameBoard board) : ICellRevealStrate
         return cell.IsMarked ? CellChangeType.UnmarkedAndRevealed : CellChangeType.Revealed;
     }
 
-    private List<CellChangeInfo> RevealCell(ICellInfo cellInfo)
+    private List<CellChangeInfo> RevealCell(ICellInfo cellInfo, GameBoard board)
     {
         // cell is already revealed -> nothing to do
         if (cellInfo.Cell.IsRevealed) return [];
@@ -67,7 +66,7 @@ public class SurroundingTilesRevealStrategy(GameBoard board) : ICellRevealStrate
                 // empty tile -> use reveal strategy
                 if (cellInfo.Cell.IsEmpty)
                 {
-                    return this.emptyTilesRevealStrategy.Reveal(this.board, cellInfo);
+                    return this.emptyTilesRevealStrategy.Reveal(board, cellInfo);
                 }
                 else // not empty tile -> reveal
                 {
