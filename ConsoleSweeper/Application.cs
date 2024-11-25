@@ -16,7 +16,7 @@ public class Application
     private IGameRenderer renderer;
     public Application()
     {
-        this.game = new Game(new GameConfiguration(16, 30, 55));
+        this.game = new Game(new GameConfiguration(16, 30, 10));
         this.controller = new ConsoleGameController(this.game);
         this.renderer = new ConsoleGameRenderer(4, 2, this.game);
         this.Setup();

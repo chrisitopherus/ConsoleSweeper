@@ -7,7 +7,7 @@ using Minesweeper.Cells;
 
 namespace Minesweeper.Strategy;
 
-public interface ICellRevealStrategy<T> where T : GameCell
+public interface ICellRevealStrategy
 {
-    List<CellChangeInfo> Reveal(GameBoard board, T cell, BoardPosition position);
+    List<CellChangeInfo> Reveal(GameBoard board, ICellInfo cellInfo);
 }

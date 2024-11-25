@@ -11,56 +11,42 @@ namespace Minesweeper.Strategy;
 /// <summary>
 /// Strategy for revealing all connected empty tiles and their borders.
 /// </summary>W
-public class EmptyTilesRevealStrategy : ICellRevealStrategy<GameCell>
+public class EmptyTilesRevealStrategy : ICellRevealStrategy
 {
-    public List<CellChangeInfo> Reveal(GameBoard board, GameCell cell, BoardPosition position)
+    public List<CellChangeInfo> Reveal(GameBoard board, ICellInfo cellInfo)
     {
-        if (!cell.IsEmpty)
+        if (!cellInfo.Cell.IsEmpty)
         {
-            throw new ArgumentException("The cell must be empty for this strategy.", nameof(cell));
+            throw new ArgumentException("The cell must be empty for this strategy.", nameof(cellInfo.Cell));
         }
 
         List<CellChangeInfo> revealedCells = [];
-        Stack<CellInfo> stack = new Stack<CellInfo>();
+        Stack<ICellInfo> stack = new Stack<ICellInfo>();
 
         // pushing the first empty tile to the stack
-        stack.Push(new CellInfo(cell, position));
+        stack.Push(cellInfo);
 
         while (stack.Count > 0)
         {
-            CellInfo cellInfo = stack.Pop();
+            ICellInfo currentCellInfo = stack.Pop();
 
             // skip if cell is already revealed
-            if (cellInfo.Cell.IsRevealed) continue;
+            // if (currentCellInfo.Cell.IsRevealed) continue;
 
-            CellChangeType cellChangeType = this.DetermineChangeType(cellInfo.Cell);
+            CellChangeType cellChangeType = this.DetermineChangeType(currentCellInfo.Cell);
             // reveal the cell
-            cellInfo.Cell.Reveal();
-            revealedCells.Add(new CellChangeInfo(cellInfo, cellChangeType));
+            currentCellInfo.Cell.Reveal();
+            revealedCells.Add(new CellChangeInfo(currentCellInfo, cellChangeType));
 
             // if cell is not empty, its a border
-            if (!cellInfo.Cell.IsEmpty) continue;
+            if (!currentCellInfo.Cell.IsEmpty) continue;
 
             // reveal surrounding cells
-            for (int offsetRow = -1; offsetRow <= 1; offsetRow++)
+            foreach (ICellInfo neighborCellInfo in board.GetNeighborsOfCell(currentCellInfo))
             {
-                for (int offsetCol = -1; offsetCol <= 1; offsetCol++)
+                if (!neighborCellInfo.Cell.IsRevealed)
                 {
-                    // if its the same cell (no offsets applied) -> skip
-                    if (offsetRow == 0 && offsetCol == 0) continue;
-
-                    int neighborRow = cellInfo.Position.Row + offsetRow;
-                    int neighborCol = cellInfo.Position.Col + offsetCol;
-
-                    // if its not a valid position (outside of the board) -> skip
-                    if (!board.IsValidBoardPosition(neighborRow, neighborCol)) continue;
-                    BoardPosition neighborPosition = new BoardPosition(neighborRow, neighborCol);
-                    GameCell neighborCell = board.GetCellAt(neighborPosition);
-
-                    if (!neighborCell.IsRevealed)
-                    {
-                        stack.Push(new CellInfo(neighborCell, neighborPosition));
-                    }
+                    stack.Push(neighborCellInfo);
                 }
             }
         }

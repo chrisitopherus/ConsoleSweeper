@@ -140,6 +140,44 @@ public class GameBoard
         return row >= 0 && row < this.config.Rows && col >= 0 && col < this.config.Cols;
     }
 
+    public IEnumerable<ICellInfo> GetNeighborsOfCell(ICellInfo cellInfo)
+    {
+        for (int rowOffset = -1; rowOffset <= 1; rowOffset++)
+        {
+            for (int colOffset = -1; colOffset <= 1; colOffset++)
+            {
+                int neighborRow = cellInfo.Position.Row + rowOffset;
+                int neighborCol = cellInfo.Position.Col + colOffset;
+
+                // if its not a valid position (outside of the board) -> skip
+                if (!this.IsValidBoardPosition(neighborRow, neighborCol)) continue;
+
+                // Get the neighbor cell and create cell info
+                BoardPosition neighborPosition = new BoardPosition(neighborRow, neighborCol);
+                GameCell neighborCell = this.GetCellAt(neighborPosition);
+                yield return new CellInfo(neighborCell, neighborPosition);
+            }
+        }
+    }
+
+    public IEnumerable<ICellInfo> GetFilteredCells(Predicate<ICellInfo> predicate)
+    {
+        for (int row = 0; row < this.Config.Rows; row++)
+        {
+            for (int col = 0; col < this.Config.Cols; col++)
+            {
+                // Get the neighbor cell and create cell info
+                BoardPosition neighborPosition = new BoardPosition(row, col);
+                GameCell cell = this.GetCellAt(neighborPosition);
+                ICellInfo cellInfo = new CellInfo(cell, neighborPosition);
+                if (predicate(cellInfo))
+                {
+                    yield return cellInfo;
+                }
+            }
+        }
+    }
+
     private GameCell[,] GenerateField(IFieldGenerationStrategy strategy)
     {
         return strategy.Generate();

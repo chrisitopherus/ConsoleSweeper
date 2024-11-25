@@ -11,7 +11,8 @@ public class Game
     private GameConfiguration config;
     private GameBoard board;
     private GameCursor cursor;
-    private EmptyTilesRevealStrategy emptyTilesRevealStrategy = new EmptyTilesRevealStrategy();
+    private EmptyTilesRevealStrategy emptyTilesRevealStrategy;
+    private SurroundingTilesRevealStrategy surroundingTilesRevealStrategy;
 
     /// <summary>
     /// Specifies how many flags are left to play.
@@ -51,6 +52,8 @@ public class Game
         this.flagAmmo = config.MineCount;
         this.board = new GameBoard(config);
         this.cursor = new GameCursor(this.board);
+        this.emptyTilesRevealStrategy = new EmptyTilesRevealStrategy();
+        this.surroundingTilesRevealStrategy = new SurroundingTilesRevealStrategy(this.board);
     }
 
     public GameBoard Board => this.board;
@@ -98,16 +101,16 @@ public class Game
         List<CellChangeInfo> updatedCells = [];
         if (cellInfo.Cell.IsRevealed)
         {
+            // if its a mine or empty tile -> do nothing
             if (cellInfo.Cell.Type != CellType.Tile || cellInfo.Cell.IsEmpty) return;
 
             // use strategy to reveal surrounding
-            return;
+            updatedCells = this.surroundingTilesRevealStrategy.Reveal(this.board, cellInfo);
         }
-
-        if (cellInfo.Cell.IsEmpty)
+        else if (cellInfo.Cell.IsEmpty)
         {
             // Use Empty Reveal Strategy
-            updatedCells = this.emptyTilesRevealStrategy.Reveal(this.Board, cellInfo.Cell, cellInfo.Position);
+            updatedCells = this.emptyTilesRevealStrategy.Reveal(this.Board, cellInfo);
         }
         else
         {
@@ -118,7 +121,25 @@ public class Game
 
         // check if the flag ammo needs to be updated
         this.UpdateFlagAmmo(updatedCells);
+
+        // send update event
         this.FireOnEvent(this.CellsUpdated, new CellsUpdatedEventArgs(updatedCells));
+
+        // check if game is lost
+        IEnumerable<CellChangeInfo>? revealedMines = this.ExtractRevealedMines(updatedCells);
+        if (revealedMines != null)
+        {
+            // State -> Loss
+            this.state = GameState.Loss;
+            this.FireOnEvent(this.GameLoss, new GameLossEventArgs());
+        }
+
+        // I dont know if its needed here
+        // Check if all flags are placed -> could be a win
+        if (this.FlagAmmo == 0 && this.CheckIfAllMinesAreFlagged())
+        {
+            this.FireOnEvent(this.GameWon, new GameWonEventArgs());
+        }
     }
 
     /// <summary>
@@ -129,6 +150,10 @@ public class Game
         if (this.state != GameState.Running) return;
 
         CellInfo cellInfo = new CellInfo(this.board.GetCellAt(this.cursor.CurrentPosition), this.cursor.CurrentPosition);
+        
+        // if no ammo for marking an unmarked cell -> stop
+        if (this.flagAmmo == 0 && !cellInfo.Cell.IsMarked) return;
+
         bool hasChanged = this.board.ToggleCellMark(cellInfo.Cell);
 
         if (hasChanged)
@@ -139,6 +164,13 @@ public class Game
             // check if the flag ammo needs to be updated
             this.UpdateFlagAmmo(updatedCells);
             this.FireOnEvent(this.CellsUpdated, new CellsUpdatedEventArgs(updatedCells));
+
+            // Check if all flags are placed -> could be a win
+            if (this.FlagAmmo == 0 && this.CheckIfAllMinesAreFlagged())
+            {
+                this.state = GameState.Win;
+                this.FireOnEvent(this.GameWon, new GameWonEventArgs());
+            }
         }
     }
 
@@ -189,9 +221,35 @@ public class Game
                     this.flagAmmo -= 1;
                     break;
                 default:
-                    // other case are not relevant for the flag ammo
+                    // other cases are not relevant for the flag ammo
                     break;
             }
         }
+    }
+
+    private IEnumerable<CellChangeInfo>? ExtractRevealedMines(IEnumerable<CellChangeInfo> cellChangeInfos)
+    {
+        List<CellChangeInfo> revealedMines = [];
+
+        foreach (CellChangeInfo cellChangeInfo in cellChangeInfos)
+        {
+            if (cellChangeInfo.Cell.Type == CellType.Mine)
+            {
+                revealedMines.Add(cellChangeInfo);
+            }
+        }
+
+        return revealedMines.Count != 0 ? revealedMines : null;
+    }
+
+    private bool CheckIfAllMinesAreFlagged()
+    {
+        IEnumerable<ICellInfo> mines = this.board.GetFilteredCells(info => info.Cell.Type == CellType.Mine);
+        foreach (CellInfo mineInfo in mines)
+        {
+            if (!mineInfo.Cell.IsMarked) return false;
+        }
+
+        return true;
     }
 }
