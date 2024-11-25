@@ -1,4 +1,5 @@
 ﻿using ConsoleSweeper.Renderer;
+using ConsoleSweeper.Renderer.Util;
 using Minesweeper;
 using Minesweeper.Board;
 using Minesweeper.Events;
@@ -16,9 +17,9 @@ public class Application
     private IGameRenderer renderer;
     public Application()
     {
-        this.game = new Game(new GameConfiguration(16, 30, 10));
+        this.game = new Game(new GameConfiguration(16, 30, 50));
         this.controller = new ConsoleGameController(this.game);
-        this.renderer = new ConsoleGameRenderer(4, 2, this.game);
+        this.renderer = new ConsoleGameRenderer(new ConsolePosition(4, 4), this.game);
         this.Setup();
     }
     public void Run()
@@ -39,6 +40,7 @@ public class Application
         this.game.GameLoss += this.OnGameLossHandler;
         this.game.CursorMoved += this.OnCursorMovedHandler;
         this.game.CellsUpdated += this.OnCellsUpdatedHandler;
+        this.game.FlagAmmoUpdated += this.OnFlagAmmoUpdatedHandler;
     }
 
     private void OnGameStartedHandler(object? sender, GameStartedEventArgs e)
@@ -48,12 +50,12 @@ public class Application
 
     private void OnGameWonHandler(object? sender, GameWonEventArgs e)
     {
-        Console.WriteLine("Game won.");
+        this.renderer.RenderWin();
     }
 
     private void OnGameLossHandler(object? sender, GameLossEventArgs e)
     {
-        Console.WriteLine("Game lost.");
+        this.renderer.RenderLoss();
     }
 
     private void OnCursorMovedHandler(object? sender, CursorMovedEventArgs e)
@@ -64,5 +66,10 @@ public class Application
     private void OnCellsUpdatedHandler(object? sender, CellsUpdatedEventArgs e)
     {
         this.renderer.RenderCellsUpdate(e.UpdatedCells);
+    }
+
+    private void OnFlagAmmoUpdatedHandler(object? sender, FlagAmmoUpdatedEventArgs e)
+    {
+        this.renderer.RenderFlagAmmoUpdate(e.NewFlagAmmo);
     }
 }

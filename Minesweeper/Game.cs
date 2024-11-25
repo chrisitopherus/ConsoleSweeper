@@ -44,6 +44,11 @@ public class Game
     /// </summary>
     public event EventHandler<CellsUpdatedEventArgs>? CellsUpdated;
 
+    /// <summary>
+    /// Is fired when the flag ammo changed/updated.
+    /// </summary>
+    public event EventHandler<FlagAmmoUpdatedEventArgs>? FlagAmmoUpdated;
+
     public Game(GameConfiguration config)
     {
         this.config = config;
@@ -62,7 +67,7 @@ public class Game
     public GameConfiguration Config => this.config;
 
     /// <summary>
-    /// Gets the amount of flags left to place.
+    /// Gets or sets the amount of flags left to place.
     /// </summary>
     public int FlagAmmo
     {
@@ -78,7 +83,10 @@ public class Game
                 throw new ArgumentOutOfRangeException(nameof(this.FlagAmmo), "The flag ammo can not be less than 0.");
             }
 
-            // send event if flag ammo changed - TODO
+            if (this.flagAmmo != value)
+            {
+                this.FireOnEvent(this.FlagAmmoUpdated, new FlagAmmoUpdatedEventArgs(value));
+            }
 
             this.flagAmmo = value;
         }
@@ -138,6 +146,7 @@ public class Game
         // Check if all flags are placed -> could be a win
         if (this.FlagAmmo == 0 && this.CheckIfAllMinesAreFlagged())
         {
+            this.state = GameState.Win;
             this.FireOnEvent(this.GameWon, new GameWonEventArgs());
         }
     }
@@ -174,6 +183,14 @@ public class Game
         }
     }
 
+    public void Restart()
+    {
+        if (this.state != GameState.Win && this.state != GameState.Loss) return;
+
+        this.Reset();
+        this.Start();
+    }
+
     /// <summary>
     /// Moves the cursor in the specified direction.
     /// </summary>
@@ -207,6 +224,13 @@ public class Game
         eventHandler?.Invoke(this, e);
     }
 
+    private void Reset()
+    {
+        this.board = new GameBoard(this.config);
+        this.cursor.Jump(0, 0);
+        this.FlagAmmo = this.config.MineCount;
+    }
+
     private void UpdateFlagAmmo(List<CellChangeInfo> cellChanges)
     {
         foreach (CellChangeInfo changeInfo in cellChanges)
@@ -218,7 +242,7 @@ public class Game
                     this.FlagAmmo += 1;
                     break;
                 case CellChangeType.Marked:
-                    this.flagAmmo -= 1;
+                    this.FlagAmmo -= 1;
                     break;
                 default:
                     // other cases are not relevant for the flag ammo

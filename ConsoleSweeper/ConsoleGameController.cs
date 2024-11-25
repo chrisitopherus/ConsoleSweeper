@@ -60,6 +60,9 @@ public class ConsoleGameController : IGameController
             case GameCommand.Reveal:
                 this.game.TryReveal();
                 break;
+            case GameCommand.Restart:
+                this.game.Restart();
+                break;
         }
     }
 }

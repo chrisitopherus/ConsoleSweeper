@@ -11,9 +11,9 @@ public class ConsoleBorderRenderer
     private ConsolePosition origin;
     StringBuilder sb = new StringBuilder();
 
-    public ConsoleBorderRenderer(int startX, int startY)
+    public ConsoleBorderRenderer(ConsolePosition origin)
     {
-        this.origin = new ConsolePosition(startX, startY);
+        this.origin = origin;
     }
 
     public void Render(int width, int height)

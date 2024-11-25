@@ -5,6 +5,7 @@ using Minesweeper.Cells;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using Utility.Cmd;
@@ -15,9 +16,14 @@ public class ConsoleGameRenderer : IGameRenderer
 {
     private readonly Game game;
 
-    private int offsetX;
+    private ConsolePosition origin;
+    private ConsolePosition borderOrigin;
+    private ConsoleLabelWIthValue<int> flagAmmoLabel;
+    private ConsoleLabel cursorControlsLabel;
+    private ConsoleLabel interactionControlsLabel;
+    private ConsoleLabel restartLabel;
 
-    private int offsetY;
+    private ConsoleLabel[] labels;
 
     private RenderCellVisitor renderCellVisitor = new RenderCellVisitor();
 
@@ -26,10 +32,11 @@ public class ConsoleGameRenderer : IGameRenderer
     private ConsoleSettings defaultSettings = ConsoleSettings.Capture();
 
     private ConsoleSettings renderSettings;
-    public ConsoleGameRenderer(int offsetX, int offsetY, Game game)
+    public ConsoleGameRenderer(ConsolePosition gameOrigin, Game game)
     {
         this.game = game;
-        // default settings
+
+        // Default settings
         this.renderSettings = new ConsoleSettings(
             ConsoleColor.White,
             ConsoleColor.Black,
@@ -37,9 +44,34 @@ public class ConsoleGameRenderer : IGameRenderer
             30,
             50,
             30);
-        this.offsetX = offsetX + 1;
-        this.offsetY = offsetY + 1;
-        this.borderRenderer = new ConsoleBorderRenderer(offsetX, offsetY);
+
+        // Renderer
+        this.origin = new ConsolePosition(gameOrigin.X, gameOrigin.Y);
+        this.borderOrigin = new ConsolePosition(gameOrigin.X - 1, gameOrigin.Y - 1);
+        this.borderRenderer = new ConsoleBorderRenderer(this.borderOrigin);
+
+        // Labels
+        this.flagAmmoLabel = new ConsoleLabelWIthValue<int>(
+            new ConsolePosition(this.borderOrigin.X + 1, this.borderOrigin.Y - 1),
+            "Flags: ",
+            this.game.FlagAmmo,
+            this.game.Config.MineCount.ToString().Length);
+
+        this.cursorControlsLabel = new ConsoleLabel(
+            new ConsolePosition(this.borderOrigin.X, this.borderOrigin.Y + this.game.Config.Rows + 2),
+            "Cursor: W,A,S,D or ↑,←,↓,→");
+
+        this.interactionControlsLabel = new ConsoleLabel(
+            new ConsolePosition(this.borderOrigin.X, this.borderOrigin.Y + this.game.Config.Rows + 3),
+            "Mark/Flag: F | Reveal: Space");
+
+        this.restartLabel = new ConsoleLabel(
+            new ConsolePosition(this.borderOrigin.X, this.borderOrigin.Y + this.game.Config.Rows + 4),
+            "Restart after W/L: R");
+
+        this.labels = [this.flagAmmoLabel, this.cursorControlsLabel, this.interactionControlsLabel, this.restartLabel];
+
+        // Setup
         this.Setup();
     }
 
@@ -80,10 +112,10 @@ public class ConsoleGameRenderer : IGameRenderer
 
     public void RenderGame()
     {
-        this.borderRenderer.Render(this.game.Config.Cols + 2, this.game.Config.Rows + 2);
+        this.RenderBorder();
 
         // Move to the offset position
-        Console.SetCursorPosition(this.offsetX, this.offsetY);
+        Console.SetCursorPosition(this.origin.X, this.origin.Y);
 
         // Get the board and iterate through it
         GameCell[,] cells = this.game.Board.GameField;
@@ -109,8 +141,35 @@ public class ConsoleGameRenderer : IGameRenderer
             Console.WriteLine();
 
             // adapt to offset
-            Console.CursorLeft += this.offsetX;
+            Console.CursorLeft += this.origin.X;
         }
+
+        // Render labels
+        this.RenderLabels();
+    }
+
+    public void RenderFlagAmmoUpdate(int flagAmmo)
+    {
+        this.renderSettings.ApplyColors();
+        int maxLength = this.game.Config.MineCount.ToString().Length;
+        this.flagAmmoLabel.Value = flagAmmo;
+        this.flagAmmoLabel.RenderUpdate();
+    }
+
+    public void RenderLoss()
+    {
+        this.renderSettings.ApplyColors();
+        Console.ForegroundColor = ConsoleColor.Red;
+        this.RenderBorder();
+        this.renderSettings.ApplyColors();
+    }
+
+    public void RenderWin()
+    {
+        this.renderSettings.ApplyColors();
+        Console.ForegroundColor = ConsoleColor.Green;
+        this.RenderBorder();
+        this.renderSettings.ApplyColors();
     }
 
     /// <summary>
@@ -121,6 +180,11 @@ public class ConsoleGameRenderer : IGameRenderer
         Console.OutputEncoding = Encoding.UTF8;
         Console.CursorVisible = false;
         this.renderSettings.Apply();
+    }
+
+    private void RenderBorder()
+    {
+        this.borderRenderer.Render(this.game.Config.Cols + 2, this.game.Config.Rows + 2);
     }
 
     /// <summary>
@@ -139,8 +203,17 @@ public class ConsoleGameRenderer : IGameRenderer
     /// <param name="position"></param>
     private void RerenderCell(BoardPosition position)
     {
-        Console.SetCursorPosition(position.Col + this.offsetX, position.Row + this.offsetY);
+        Console.SetCursorPosition(position.Col + this.origin.X, position.Row + this.origin.Y);
         this.RenderCell(this.game.Board.GetCellAt(position));
+    }
+
+    private void RenderLabels()
+    {
+        this.renderSettings.ApplyColors();
+        foreach (ConsoleLabel label in this.labels)
+        {
+            label.Render();
+        }
     }
 
     /// <summary>

@@ -24,7 +24,10 @@ public static class KeyMapping
         // Interaction Control
         { ConsoleKey.Spacebar, GameCommand.Reveal },
         { ConsoleKey.F, GameCommand.ToggleMark },
-        { ConsoleKey.M, GameCommand.ToggleMark }
+        { ConsoleKey.M, GameCommand.ToggleMark },
+
+        // Special Interaction Control
+        { ConsoleKey.R, GameCommand.Restart }
     };
 
     public static Dictionary<ConsoleKey, GameCommand> KeyToCommandMap

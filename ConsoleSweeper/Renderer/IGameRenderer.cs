@@ -11,5 +11,8 @@ public interface IGameRenderer
 {
     void RenderCursorUpdate(BoardPosition previousPosition, BoardPosition newPosition);
     void RenderCellsUpdate(IEnumerable<ICellInfo> updatedCellInfos);
+    void RenderFlagAmmoUpdate(int flagAmmo);
     void RenderGame();
+    void RenderLoss();
+    void RenderWin();
 }

@@ -7,7 +7,7 @@ public class KeyboardWatcher
 {
     private CancellationTokenSource tokenSource;
 
-    public event EventHandler<KeyPressedEventArgs> KeyPressed;
+    public event EventHandler<KeyPressedEventArgs>? KeyPressed;
 
     public KeyboardWatcher()
     {
@@ -32,10 +32,17 @@ public class KeyboardWatcher
         this.KeyPressed?.Invoke(this, e);
     }
 
-    public void Start()
+    public async void Start()
     {
         this.TokenSource = new CancellationTokenSource();
-        Task.Run(() => WatchKeysAsync(this.TokenSource.Token));
+        try
+        {
+            await Task.Run(() => WatchKeysAsync(this.TokenSource.Token));
+        } 
+        catch
+        {
+            throw;
+        }
     }
 
     public void Stop()
