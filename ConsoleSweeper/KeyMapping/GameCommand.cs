@@ -14,5 +14,6 @@ public enum GameCommand
     MoveCursorRight,
     MoveCursorUp,
     MoveCursorDown,
-    Restart
+    Restart,
+    Menu
 }

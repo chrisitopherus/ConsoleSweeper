@@ -27,7 +27,8 @@ public static class KeyMapping
         { ConsoleKey.M, GameCommand.ToggleMark },
 
         // Special Interaction Control
-        { ConsoleKey.R, GameCommand.Restart }
+        { ConsoleKey.R, GameCommand.Restart },
+        { ConsoleKey.Escape, GameCommand.Menu }
     };
 
     public static Dictionary<ConsoleKey, GameCommand> KeyToCommandMap
