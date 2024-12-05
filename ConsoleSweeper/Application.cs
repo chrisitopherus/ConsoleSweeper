@@ -26,7 +26,6 @@ public class Application
     {
         Console.Clear();
         Console.OutputEncoding = Encoding.UTF8;
-        this.game.Start();
         this.controller.Start();
         while (true)
         {
