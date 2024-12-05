@@ -68,11 +68,15 @@ public class SurroundingTilesRevealStrategy() : ICellRevealStrategy
                 {
                     return this.emptyTilesRevealStrategy.Reveal(board, cellInfo);
                 }
-                else // not empty tile -> reveal
+                else if (!cellInfo.Cell.IsMarked) // not empty tile and not marked -> reveal
                 {
                     CellChangeType changeType = this.DetermineRevealChangeType(cellInfo.Cell);
                     cellInfo.Cell.Reveal();
                     return [new CellChangeInfo(cellInfo, changeType)];
+                }
+                else // marked -> no reveal
+                {
+                    return [];
                 }
             default:
                 return [];
