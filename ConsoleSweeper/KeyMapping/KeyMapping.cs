@@ -28,7 +28,8 @@ public static class KeyMapping
 
         // Special Interaction Control
         { ConsoleKey.R, GameCommand.Restart },
-        { ConsoleKey.Escape, GameCommand.Menu }
+        { ConsoleKey.Escape, GameCommand.Menu },
+        { ConsoleKey.Enter, GameCommand.Select }
     };
 
     public static Dictionary<ConsoleKey, GameCommand> KeyToCommandMap
