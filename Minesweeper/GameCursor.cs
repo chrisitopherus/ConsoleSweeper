@@ -70,8 +70,8 @@ public class GameCursor
     private void Move(int rowDelta, int colDelta)
     {
         // Example: 4x4, current row = 0, we move up -> -1 : 0 + -1 + 4 = 3, 3 % 4 = 3 -> so it jumped to the bottom
-        int newRow = (currentPosition.Row + rowDelta + this.board.Config.Rows) % this.board.Config.Rows;
-        int newCol = (currentPosition.Col + colDelta + this.board.Config.Cols) % this.board.Config.Cols;
+        int newRow = (this.currentPosition.Row + rowDelta + this.board.Config.Rows) % this.board.Config.Rows;
+        int newCol = (this.currentPosition.Col + colDelta + this.board.Config.Cols) % this.board.Config.Cols;
         this.CurrentPosition = new BoardPosition(newRow, newCol);
     }
 }
