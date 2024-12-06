@@ -1,4 +1,5 @@
-﻿using ConsoleSweeper.Renderer.Util;
+﻿using ConsoleSweeper.Renderer.Border;
+using ConsoleSweeper.Renderer.Util;
 using Minesweeper;
 using Minesweeper.Board;
 using Minesweeper.Cells;

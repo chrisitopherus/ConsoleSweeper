@@ -6,11 +6,6 @@ using System.Threading.Tasks;
 
 namespace ConsoleSweeper.Renderer.Menu;
 
-public interface IMenuItem
+public class GameMenuRenderer
 {
-    void Execute();
-
-    string Label { get; }
-    bool IsVisible { get; }
-
 }
