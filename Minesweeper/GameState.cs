@@ -9,7 +9,7 @@ namespace Minesweeper;
 public enum GameState
 {
     NotStarted,
-    Paused,
+    Menu,
     Running,
     Win,
     Loss
