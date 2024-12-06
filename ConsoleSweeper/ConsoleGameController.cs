@@ -1,4 +1,5 @@
 ﻿using ConsoleSweeper.KeyMapping;
+using ConsoleSweeper.Menu;
 using Minesweeper;
 using System;
 using System.Collections.Generic;
@@ -12,12 +13,14 @@ namespace ConsoleSweeper;
 public class ConsoleGameController : IGameController
 {
     private Game game;
+    private GameMenu menu;
     private KeyboardWatcher keyboardWatcher;
     private InputHandler inputHandler;
 
-    public ConsoleGameController(Game game)
+    public ConsoleGameController(Game game, GameMenu menu)
     {
         this.game = game;
+        this.menu = menu;
         this.keyboardWatcher = new KeyboardWatcher();
         this.inputHandler = new InputHandler();
     }
@@ -49,10 +52,24 @@ public class ConsoleGameController : IGameController
                 this.game.MoveCursor(CursorMoveDirection.Right);
                 break;
             case GameCommand.MoveCursorUp:
-                this.game.MoveCursor(CursorMoveDirection.Up);
+                if (this.game.CurrentState == GameState.Menu)
+                {
+                    this.menu.PrevItem();
+                }
+                else
+                {
+                    this.game.MoveCursor(CursorMoveDirection.Up);
+                }
                 break;
             case GameCommand.MoveCursorDown:
-                this.game.MoveCursor(CursorMoveDirection.Down);
+                if (this.game.CurrentState == GameState.Menu)
+                {
+                    this.menu.NextItem();
+                }
+                else
+                {
+                    this.game.MoveCursor(CursorMoveDirection.Down);
+                }
                 break;
             case GameCommand.ToggleMark:
                 this.game.TryToggleMark();
@@ -63,6 +80,27 @@ public class ConsoleGameController : IGameController
             case GameCommand.Restart:
                 this.game.Restart();
                 break;
+            case GameCommand.Menu:
+                // If game has not even started -> escape should do nothing
+                if (this.game.CurrentState == GameState.NotStarted)
+                {
+                    return;
+                }
+
+                if (this.menu.IsOpen)
+                {
+                    this.menu.Close();
+                }
+                else
+                {
+                    this.menu.Open();
+                }
+                break;
+            case GameCommand.Select:
+                this.menu.ExecuteCurrentItem();
+                break;
+            default:
+                throw new Exception($"Unhandled Command: {nameof(command)}");
         }
     }
 }
