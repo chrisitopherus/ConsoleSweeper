@@ -61,6 +61,8 @@ public class Game
         this.surroundingTilesRevealStrategy = new SurroundingTilesRevealStrategy();
     }
 
+    public GameState CurrentState => this.state;
+
     public GameBoard Board => this.board;
     public GameCursor Cursor => this.cursor;
 
