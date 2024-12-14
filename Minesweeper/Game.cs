@@ -61,11 +61,37 @@ public class Game
         this.surroundingTilesRevealStrategy = new SurroundingTilesRevealStrategy();
     }
 
-    public GameState CurrentState => this.state;
+    /// <summary>
+    /// The state of the game.
+    /// </summary>
+    public GameState CurrentState
+    {
+        get
+        {
+            return this.state;
+        }
 
+        private set
+        {
+            this.PreviousState = this.state;
+            this.state = value;
+        }
+    }
+    public GameState PreviousState { get; private set; }
+
+    /// <summary>
+    /// The board of the game.
+    /// </summary>
     public GameBoard Board => this.board;
+
+    /// <summary>
+    /// The cursor of the game.
+    /// </summary>
     public GameCursor Cursor => this.cursor;
 
+    /// <summary>
+    /// The configuration of the game.
+    /// </summary>
     public GameConfiguration Config => this.config;
 
     /// <summary>
@@ -94,9 +120,13 @@ public class Game
         }
     }
 
+    /// <summary>
+    /// Starts the game.
+    /// </summary>
     public void Start()
     {
-        this.state = GameState.Running;
+        this.board.Generate();
+        this.CurrentState = GameState.Running;
         this.FireOnEvent(this.GameStarted, new GameStartedEventArgs(this.config));
     }
 
@@ -105,7 +135,7 @@ public class Game
     /// </summary>
     public void TryReveal()
     {
-        if (this.state != GameState.Running) return;
+        if (this.CurrentState != GameState.Running) return;
 
         CellInfo cellInfo = new CellInfo(this.board.GetCellAt(this.cursor.CurrentPosition), this.cursor.CurrentPosition);
         List<CellChangeInfo> updatedCells = [];
@@ -140,7 +170,7 @@ public class Game
         if (revealedMines != null)
         {
             // State -> Loss
-            this.state = GameState.Loss;
+            this.CurrentState = GameState.Loss;
             this.FireOnEvent(this.GameLoss, new GameLossEventArgs());
         }
 
@@ -148,7 +178,7 @@ public class Game
         // Check if all flags are placed -> could be a win
         if (this.FlagAmmo == 0 && this.CheckIfAllMinesAreFlagged())
         {
-            this.state = GameState.Win;
+            this.CurrentState = GameState.Win;
             this.FireOnEvent(this.GameWon, new GameWonEventArgs());
         }
     }
@@ -158,7 +188,7 @@ public class Game
     /// </summary>
     public void TryToggleMark()
     {
-        if (this.state != GameState.Running) return;
+        if (this.CurrentState != GameState.Running) return;
 
         CellInfo cellInfo = new CellInfo(this.board.GetCellAt(this.cursor.CurrentPosition), this.cursor.CurrentPosition);
         
@@ -179,15 +209,18 @@ public class Game
             // Check if all flags are placed -> could be a win
             if (this.FlagAmmo == 0 && this.CheckIfAllMinesAreFlagged())
             {
-                this.state = GameState.Win;
+                this.CurrentState = GameState.Win;
                 this.FireOnEvent(this.GameWon, new GameWonEventArgs());
             }
         }
     }
 
+    /// <summary>
+    /// Restarts the game.
+    /// </summary>
     public void Restart()
     {
-        if (this.state != GameState.Win && this.state != GameState.Loss) return;
+        if (this.CurrentState != GameState.Win && this.CurrentState != GameState.Loss) return;
 
         this.Reset();
         this.Start();
@@ -199,7 +232,7 @@ public class Game
     /// <param name="direction">The direction in which the cursor should move.</param>
     public void MoveCursor(CursorMoveDirection direction)
     {
-        if (this.state != GameState.Running) return;
+        if (this.CurrentState != GameState.Running) return;
 
         BoardPosition previousPosition = this.cursor.CurrentPosition;
         switch (direction)
@@ -221,11 +254,36 @@ public class Game
         this.FireOnEvent(this.CursorMoved, new CursorMovedEventArgs(previousPosition, this.cursor.CurrentPosition));
     }
 
+    public void OpenMenuState()
+    {
+        this.CurrentState = GameState.Menu;
+    }
+
+    public void CloseMenuState()
+    {
+        this.CurrentState = this.PreviousState;
+    }
+
+    public void UpdateConfiguration(GameConfiguration newConfiguration)
+    {
+        this.Config.UpdateConfig(newConfiguration);
+        this.Reset();
+    }
+
+    /// <summary>
+    /// Tries to invoke the specified <see cref="EventHandler"/> with the specified <see cref="EventArgs"/>.
+    /// </summary>
+    /// <typeparam name="TEventArgs">Event arguments.</typeparam>
+    /// <param name="eventHandler">The event handler to invoke.</param>
+    /// <param name="e">The event arguments.</param>
     protected virtual void FireOnEvent<TEventArgs>(EventHandler<TEventArgs>? eventHandler, TEventArgs e)
     {
         eventHandler?.Invoke(this, e);
     }
 
+    /// <summary>
+    /// Resets the game.
+    /// </summary>
     private void Reset()
     {
         this.board = new GameBoard(this.config);
@@ -233,6 +291,10 @@ public class Game
         this.FlagAmmo = this.config.MineCount;
     }
 
+    /// <summary>
+    /// Updates the flag ammo if neccessary.
+    /// </summary>
+    /// <param name="cellChanges">A list of cell changes.</param>
     private void UpdateFlagAmmo(List<CellChangeInfo> cellChanges)
     {
         foreach (CellChangeInfo changeInfo in cellChanges)
@@ -253,7 +315,12 @@ public class Game
         }
     }
 
-    private IEnumerable<CellChangeInfo>? ExtractRevealedMines(IEnumerable<CellChangeInfo> cellChangeInfos)
+    /// <summary>
+    /// Extracts all revealed mines from a collection of changed cells.
+    /// </summary>
+    /// <param name="cellChangeInfos">The changed cells.</param>
+    /// <returns>A list of all revealed mines or null.</returns>
+    private List<CellChangeInfo>? ExtractRevealedMines(IEnumerable<CellChangeInfo> cellChangeInfos)
     {
         List<CellChangeInfo> revealedMines = [];
 
@@ -268,6 +335,10 @@ public class Game
         return revealedMines.Count != 0 ? revealedMines : null;
     }
 
+    /// <summary>
+    /// Checks if all the mines are flagged.
+    /// </summary>
+    /// <returns>Whether all mines are flagged.</returns>
     private bool CheckIfAllMinesAreFlagged()
     {
         IEnumerable<ICellInfo> mines = this.board.GetFilteredCells(info => info.Cell.Type == CellType.Mine);

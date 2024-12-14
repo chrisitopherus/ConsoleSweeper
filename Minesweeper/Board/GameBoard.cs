@@ -13,12 +13,13 @@ namespace Minesweeper.Board;
 public class GameBoard
 {
     private GameConfiguration config;
-    private GameCell[,] gameField;
+    private GameCell[,] gameField = new GameCell[0,0];
+    private IFieldGenerationStrategy strategy;
 
     public GameBoard(GameConfiguration configuration)
     {
-        this.Config = configuration;
-        this.GameField = GenerateField(new SimpleRandomGenerationStrategy(configuration));
+        this.config = configuration;
+        this.strategy = new SimpleRandomGenerationStrategy(configuration);
     }
 
     public GameConfiguration Config
@@ -45,6 +46,24 @@ public class GameBoard
         {
             this.gameField = value;
         }
+    }
+
+    public IFieldGenerationStrategy GenerationStrategy
+    {
+        get
+        {
+            return this.strategy;
+        }
+
+        set
+        {
+            this.strategy = value;
+        }
+    }
+
+    public void Generate()
+    {
+        this.gameField = this.strategy.Generate();
     }
 
     public GameCell GetCellAt(BoardPosition position)
@@ -176,10 +195,5 @@ public class GameBoard
                 }
             }
         }
-    }
-
-    private GameCell[,] GenerateField(IFieldGenerationStrategy strategy)
-    {
-        return strategy.Generate();
     }
 }

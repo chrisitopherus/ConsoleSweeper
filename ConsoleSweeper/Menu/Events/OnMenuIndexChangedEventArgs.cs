@@ -9,13 +9,13 @@ namespace ConsoleSweeper.Menu.Events;
 public class OnMenuIndexChangedEventArgs : EventArgs
 {
     private readonly int prevIndex;
-    private readonly int nextIndex;
+    private readonly int newIndex;
     public OnMenuIndexChangedEventArgs(int prevIndex, int newIndex)
     {
         this.prevIndex = prevIndex;
-        this.nextIndex = newIndex;
+        this.newIndex = newIndex;
     }
 
     public int PrevIndex => this.prevIndex;
-    public int NextIndex => this.nextIndex;
+    public int NewIndex => this.newIndex;
 }

@@ -1,4 +1,6 @@
-﻿using ConsoleSweeper.Renderer.Border;
+﻿using ConsoleSweeper.Menu;
+using ConsoleSweeper.Renderer.Border;
+using ConsoleSweeper.Renderer.Menu;
 using ConsoleSweeper.Renderer.Util;
 using Minesweeper;
 using Minesweeper.Board;
@@ -16,6 +18,7 @@ namespace ConsoleSweeper.Renderer;
 public class ConsoleGameRenderer : IGameRenderer
 {
     private readonly Game game;
+    private readonly GameMenu gameMenu;
 
     private ConsolePosition origin;
     private ConsolePosition borderOrigin;
@@ -29,29 +32,26 @@ public class ConsoleGameRenderer : IGameRenderer
     private RenderCellVisitor renderCellVisitor = new RenderCellVisitor();
 
     private ConsoleBorderRenderer borderRenderer;
+    private GameMenuRenderer gameMenuRenderer;
 
     private ConsoleSettings defaultSettings = ConsoleSettings.Capture();
 
     private ConsoleSettings renderSettings;
-    public ConsoleGameRenderer(ConsolePosition gameOrigin, Game game)
+    public ConsoleGameRenderer(ConsolePosition gameOrigin, Game game, GameMenu gameMenu, ConsoleSettings renderSettings)
     {
         this.game = game;
+        this.gameMenu = gameMenu;
 
-        // Default settings
-        this.renderSettings = new ConsoleSettings(
-            ConsoleColor.White,
-            ConsoleColor.Black,
-            50,
-            30,
-            50,
-            30);
+        // Render settings
+        this.renderSettings = renderSettings;
 
         // Renderer
         this.origin = new ConsolePosition(gameOrigin.X, gameOrigin.Y);
         this.borderOrigin = new ConsolePosition(gameOrigin.X - 1, gameOrigin.Y - 1);
         this.borderRenderer = new ConsoleBorderRenderer(this.borderOrigin);
+        this.gameMenuRenderer = new GameMenuRenderer(this.gameMenu, origin, this.renderSettings);
 
-        // Labels
+        // Labels - MUST BE BENEATH RENDERER INIT
         this.flagAmmoLabel = new ConsoleLabelWIthValue<int>(
             new ConsolePosition(this.borderOrigin.X + 1, this.borderOrigin.Y - 1),
             "Flags: ",
@@ -113,8 +113,83 @@ public class ConsoleGameRenderer : IGameRenderer
 
     public void RenderGame()
     {
-        this.RenderBorder();
+        // render game depending on state:
+        switch (this.game.CurrentState)
+        {
+            case GameState.Running:
+                this.RenderRunningGame();
+                break;
+            case GameState.Win:
+                this.RenderWin();
+                this.RenderGameFieldWithLabels();
+                break;
+            case GameState.Loss:
+                this.RenderLoss();
+                this.RenderGameFieldWithLabels();
+                break;
+            default:
+                this.RenderRunningGame();
+                break;
+        }
+    }
 
+    public void RenderFlagAmmoUpdate(int flagAmmo)
+    {
+        this.renderSettings.ApplyColors();
+        int maxLength = this.game.Config.MineCount.ToString().Length;
+        this.flagAmmoLabel.Value = flagAmmo;
+        this.flagAmmoLabel.RenderUpdate();
+    }
+
+    /// <summary>
+    /// Rerenders the border to display a loss.
+    /// </summary>
+    public void RenderLoss()
+    {
+        this.renderSettings.ApplyColors();
+        Console.ForegroundColor = ConsoleColor.Red;
+        this.RenderBorder();
+        this.renderSettings.ApplyColors();
+    }
+
+    /// <summary>
+    /// Rerenders the border to display a win.
+    /// </summary>
+    public void RenderWin()
+    {
+        this.renderSettings.ApplyColors();
+        Console.ForegroundColor = ConsoleColor.Green;
+        this.RenderBorder();
+        this.renderSettings.ApplyColors();
+    }
+
+    public void RenderMenu()
+    {
+        this.gameMenuRenderer.Render();
+    }
+
+    public void UnrenderMenu()
+    {
+        this.gameMenuRenderer.Unrender();
+    }
+
+    public void RenderMenuUpdate(int prevIndex, int newIndex)
+    {
+        this.gameMenuRenderer.RenderMenuUpdate(prevIndex, newIndex);
+    }
+
+    /// <summary>
+    /// Setup the console for the renderer.
+    /// </summary>
+    private void Setup()
+    {
+        Console.OutputEncoding = Encoding.UTF8;
+        Console.CursorVisible = false;
+        this.renderSettings.Apply();
+    }
+
+    private void RenderGameFieldWithLabels()
+    {
         // Move to the offset position
         Console.SetCursorPosition(this.origin.X, this.origin.Y);
 
@@ -149,38 +224,14 @@ public class ConsoleGameRenderer : IGameRenderer
         this.RenderLabels();
     }
 
-    public void RenderFlagAmmoUpdate(int flagAmmo)
+    private void RenderRunningGame()
     {
+        // color reset
         this.renderSettings.ApplyColors();
-        int maxLength = this.game.Config.MineCount.ToString().Length;
-        this.flagAmmoLabel.Value = flagAmmo;
-        this.flagAmmoLabel.RenderUpdate();
-    }
-
-    public void RenderLoss()
-    {
-        this.renderSettings.ApplyColors();
-        Console.ForegroundColor = ConsoleColor.Red;
         this.RenderBorder();
-        this.renderSettings.ApplyColors();
-    }
 
-    public void RenderWin()
-    {
-        this.renderSettings.ApplyColors();
-        Console.ForegroundColor = ConsoleColor.Green;
-        this.RenderBorder();
-        this.renderSettings.ApplyColors();
-    }
-
-    /// <summary>
-    /// Setup the console for the renderer.
-    /// </summary>
-    private void Setup()
-    {
-        Console.OutputEncoding = Encoding.UTF8;
-        Console.CursorVisible = false;
-        this.renderSettings.Apply();
+        this.RenderGameFieldWithLabels();
+        
     }
 
     private void RenderBorder()

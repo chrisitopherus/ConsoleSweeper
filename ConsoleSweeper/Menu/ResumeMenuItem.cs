@@ -3,17 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ConsoleSweeper.Interfaces;
+using ConsoleSweeper.Menu.Interfaces;
+using Minesweeper;
 
 namespace ConsoleSweeper.Menu;
 
 public class ResumeMenuItem : IMenuItem
 {
-    public string Label => throw new NotImplementedException();
+    private readonly IGameResumable subject;
+    public ResumeMenuItem(IGameResumable subject)
+    {
+        this.subject = subject;
+    }
 
-    public bool IsVisible => throw new NotImplementedException();
+    public string Label => "Resume";
+
+    public bool IsActive => this.subject.Game.CurrentState != GameState.NotStarted;
 
     public void Execute()
     {
-        throw new NotImplementedException();
+        this.subject.ResumeGame();
     }
 }

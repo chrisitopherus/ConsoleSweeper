@@ -1,4 +1,6 @@
-﻿using System;
+﻿using ConsoleSweeper.Interfaces;
+using ConsoleSweeper.Menu.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +10,18 @@ namespace ConsoleSweeper.Menu;
 
 public class ExitMenuItem : IMenuItem
 {
-    public string Label => throw new NotImplementedException();
+    private readonly IStopable subject;
+    public ExitMenuItem(IStopable subject)
+    {
+        this.subject = subject;
+    }
 
-    public bool IsVisible => throw new NotImplementedException();
+    public string Label => "Exit";
+
+    public bool IsActive => true;
 
     public void Execute()
     {
-        throw new NotImplementedException();
+        this.subject.Stop();
     }
 }

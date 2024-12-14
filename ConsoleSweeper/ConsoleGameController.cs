@@ -52,21 +52,23 @@ public class ConsoleGameController : IGameController
                 this.game.MoveCursor(CursorMoveDirection.Right);
                 break;
             case GameCommand.MoveCursorUp:
-                if (this.game.CurrentState == GameState.Menu)
+                // When menu displayed -> cursor is for menu
+                if (this.game.CurrentState == GameState.NotStarted || this.game.CurrentState == GameState.Menu)
                 {
                     this.menu.PrevItem();
                 }
-                else
+                else // otherwise cursor is for game
                 {
                     this.game.MoveCursor(CursorMoveDirection.Up);
                 }
                 break;
             case GameCommand.MoveCursorDown:
-                if (this.game.CurrentState == GameState.Menu)
+                // When menu displayed -> cursor is for menu
+                if (this.game.CurrentState == GameState.NotStarted || this.game.CurrentState == GameState.Menu)
                 {
                     this.menu.NextItem();
                 }
-                else
+                else // otherwise cursor is for game
                 {
                     this.game.MoveCursor(CursorMoveDirection.Down);
                 }
@@ -90,14 +92,21 @@ public class ConsoleGameController : IGameController
                 if (this.menu.IsOpen)
                 {
                     this.menu.Close();
+                    this.game.CloseMenuState();
                 }
                 else
                 {
                     this.menu.Open();
+                    this.game.OpenMenuState();
                 }
                 break;
             case GameCommand.Select:
-                this.menu.ExecuteCurrentItem();
+                if (this.menu.IsOpen)
+                {
+                    if (this.menu.SelectedItem == null) return;
+                    if (!this.menu.SelectedItem.IsActive) return;
+                    this.menu.ExecuteCurrentItem();
+                }
                 break;
             default:
                 throw new Exception($"Unhandled Command: {nameof(command)}");

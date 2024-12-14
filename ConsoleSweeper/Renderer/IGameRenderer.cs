@@ -15,4 +15,7 @@ public interface IGameRenderer
     void RenderGame();
     void RenderLoss();
     void RenderWin();
+    void RenderMenu();
+    public void UnrenderMenu();
+    void RenderMenuUpdate(int prevIndex, int newIndex);
 }

@@ -1,4 +1,6 @@
 ﻿using ConsoleSweeper.Menu.Events;
+using ConsoleSweeper.Menu.Interfaces;
+using ConsoleSweeper.Menu.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -70,11 +72,24 @@ public class GameMenu
         return this;
     }
 
+    public IMenuItem GetItemAtIndex(int index)
+    {
+        return this.items[index];
+    }
+
     public IEnumerable<IMenuItem> GetItems()
     {
         for (int i = 0; i < this.ItemCount; i++)
         {
             yield return this.items[i];
+        }
+    }
+
+    public IEnumerable<MenuItemInfo> GetItemsWithInfo()
+    {
+        for (int i = 0; i < this.ItemCount; i++)
+        {
+            yield return new MenuItemInfo(this.items[i], this.Index == i);
         }
     }
 
@@ -116,6 +131,7 @@ public class GameMenu
     private void ChangeIndex(int delta)
     {
         int prevIndex = this.index;
+
         this.index = (this.index + delta + this.ItemCount) % this.ItemCount;
         this.FireOnEvent(this.OnMenuIndexChanged, new OnMenuIndexChangedEventArgs(prevIndex, this.index));
     }
